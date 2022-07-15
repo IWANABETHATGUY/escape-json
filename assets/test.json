@@ -1,0 +1,8 @@
+{
+  "test": "result",
+  "that": 2,
+  "array": ["test", "\u2222", 20],
+  "res": {
+    "test": null
+  }
+}
