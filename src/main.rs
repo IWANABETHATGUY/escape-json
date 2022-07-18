@@ -6,6 +6,7 @@ fn main() {
     let INPUT: String = format!("\"{}{}\"", "something".repeat(1000), "  ".repeat(100));
     // let mut file = std::fs::File::create("./escape.json").unwrap();
     // file.write_all(INPUT.as_bytes()).unwrap();
+    println!("{}", r#"\\u2028"#.len());
     let array = include_str!("../assets/array.json");
     let big = include_str!("../assets/big.json");
     let large = include_str!("../assets/large.json");

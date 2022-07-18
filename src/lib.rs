@@ -1,6 +1,8 @@
 use std::borrow::Cow;
 use std::collections::BinaryHeap;
 const ESCAPE_STRING_LENGTH: usize = 3;
+const u2028: &'static str = r#"\\u2028"#;
+const u2029: &'static str = r#"\\u2029"#;
 pub fn two_pass_replace<'a>(input: &str) -> String {
     let ret = input
         .replace('\u{2028}', r#"\\u2028"#)
@@ -14,14 +16,18 @@ pub fn two_pass_search_one_pass_copy<'a>(input: &'a str) -> Cow<'a, str> {
         .match_indices('\u{2028}')
         .chain(input.match_indices('\u{2029}'))
         .collect::<Vec<_>>();
-    vec.sort_unstable_by(|a, b| a.0.cmp(&b.0));
     // println!("{:?}", vec.iter().map(|item| item.0).collect::<Vec<_>>());
     let ret = if vec.len() > 0 {
-        let mut ret = String::with_capacity(input.len() + vec.len());
+        vec.sort_unstable_by(|a, b| a.0.cmp(&b.0));
+        let mut ret = String::with_capacity(input.len() + vec.len() * 4);
         let mut last = 0;
         for (i, ch) in vec.into_iter() {
             ret.push_str(unsafe { input.get_unchecked(last..i) });
-            ret.push_str(if ch == "\u{2028}" { r#"\\u2028"# } else { r#"\\u2029"# });
+            ret.push_str(if ch == "\u{2028}" {
+                u2028
+            } else {
+                u2029
+            });
             last = i + ESCAPE_STRING_LENGTH;
         }
         ret.push_str(unsafe { input.get_unchecked(last..) });
