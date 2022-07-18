@@ -20,7 +20,7 @@ fn main() {
 }
 
 fn bench(input: &str, suite_name: &str) {
-    let pass = 1;
+    let pass = 100;
     let start = Instant::now();
     for i in 0..pass {
         let _ = two_pass_replace(input);
