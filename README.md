@@ -1,3 +1,8 @@
+# A faster implementation of escape json 
+Faster JSON escape for `0x2028` and `0x2029`
+## Related issues: 
+1. https://bugs.chromium.org/p/v8/issues/detail?id=1907
+
 ## Benchmark result
 ```bash
 Gnuplot not found, using plotters backend
