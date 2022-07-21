@@ -4,6 +4,7 @@ Faster JSON escape for `0x2028` and `0x2029`
 1. https://bugs.chromium.org/p/v8/issues/detail?id=1907
 
 ## Benchmark result
+```
 array.json @`two_pass_replace`                                                                             
                         time:   [40.201 ns 40.336 ns 40.488 ns]
 Found 4 outliers among 100 measurements (4.00%)
