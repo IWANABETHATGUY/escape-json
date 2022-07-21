@@ -1,6 +1,6 @@
 use std::{io::Write, time::Instant};
 
-use escape_json::{two_pass_replace, two_pass_search_one_pass_copy, regex_replace, regex_iter_replace};
+use escape_json::{two_pass_replace, two_pass_search_one_pass_copy, regex_replace, regex_iter_replace, memchr3_replace};
 
 fn main() {
     println!("{}", 10 >> 3 == 30);
@@ -60,4 +60,10 @@ fn bench(input: &str, suite_name: &str) {
         let _ = regex_iter_replace(input);
     }
     println!("`{}` regex_iter: {:?}", suite_name, start.elapsed());
+
+    let start = Instant::now();
+    for i in 0..pass {
+        let _ = memchr3_replace(input);
+    }
+    println!("`{}` memchr3: {:?}", suite_name, start.elapsed());
 }

@@ -40,7 +40,35 @@ pub fn two_pass_search_one_pass_copy<'a>(input: &'a str) -> Cow<'a, str> {
     };
     ret
 }
-
+static BYTES_2028: &'static [u8] = "\u{2028}".as_bytes();
+static BYTES_2029: &'static [u8] = "\u{2029}".as_bytes();
+pub fn memchr3_replace<'a>(input: &'a str) -> Cow<'a, str> {
+    let mut vec = memchr::memmem::find_iter(input.as_bytes(), BYTES_2028)
+        .chain(memchr::memmem::find_iter(input.as_bytes(), BYTES_2029))
+        .map(|i| (i, &input[i..i + 3]))
+        .collect::<Vec<_>>();
+    // memchr::memchr3_iter(needle1, needle2, needle3, haystack)
+    // let mut vec = input
+    //     .match_indices('\u{2028}')
+    //     .chain(input.match_indices('\u{2029}'))
+    //     .collect::<Vec<_>>();
+    // println!("{:?}", vec.iter().map(|item| item.0).collect::<Vec<_>>());
+    let ret = if vec.len() > 0 {
+        vec.sort_unstable_by(|a, b| a.0.cmp(&b.0));
+        let mut ret = String::with_capacity(input.len() + vec.len() * 4 + 1);
+        let mut last = 0;
+        for (i, ch) in vec.into_iter() {
+            ret.push_str(unsafe { input.get_unchecked(last..i) });
+            ret.push_str(if ch == "\u{2028}" { u2028 } else { u2029 });
+            last = i + ESCAPE_STRING_LENGTH;
+        }
+        ret.push_str(unsafe { input.get_unchecked(last..) });
+        Cow::Owned(ret)
+    } else {
+        Cow::Borrowed(input)
+    };
+    ret
+}
 pub fn regex_replace<'a>(input: &'a str) -> String {
     REGEX2029
         .replace_all(&REGEX2028.replace_all(input, u2028), u2029)
@@ -114,6 +142,7 @@ mod test {
             assert_eq!(super::two_pass_search_one_pass_copy(source), expected);
             assert_eq!(super::regex_replace(source), expected);
             assert_eq!(super::regex_iter_replace(source), expected);
+            assert_eq!(super::memchr3_replace(source), expected);
         }
     }
 }

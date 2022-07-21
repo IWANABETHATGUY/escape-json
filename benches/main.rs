@@ -1,5 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use escape_json::{escape_json, two_pass_replace, two_pass_search_one_pass_copy, regex_replace, regex_iter_replace};
+use escape_json::{escape_json, two_pass_replace, two_pass_search_one_pass_copy, regex_replace, regex_iter_replace, memchr3_replace};
 
 fn criterion_benchmark(c: &mut Criterion) {
     bench!("array.json", c);
@@ -33,6 +33,10 @@ macro_rules! bench {
 
         $c.bench_function(concat!($filename, " @`regex_iter`"), |b| {
             b.iter(|| regex_iter_replace(black_box(source)))
+        });
+
+        $c.bench_function(concat!($filename, " @`memchr3`"), |b| {
+            b.iter(|| memchr3_replace(black_box(source)))
         });
     }};
 }
