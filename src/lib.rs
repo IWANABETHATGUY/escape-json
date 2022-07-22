@@ -47,12 +47,6 @@ pub fn memchr3_replace<'a>(input: &'a str) -> Cow<'a, str> {
         .chain(memchr::memmem::find_iter(input.as_bytes(), BYTES_2029))
         .map(|i| (i, &input[i..i + 3]))
         .collect::<Vec<_>>();
-    // memchr::memchr3_iter(needle1, needle2, needle3, haystack)
-    // let mut vec = input
-    //     .match_indices('\u{2028}')
-    //     .chain(input.match_indices('\u{2029}'))
-    //     .collect::<Vec<_>>();
-    // println!("{:?}", vec.iter().map(|item| item.0).collect::<Vec<_>>());
     let ret = if vec.len() > 0 {
         vec.sort_unstable_by(|a, b| a.0.cmp(&b.0));
         let mut ret = String::with_capacity(input.len() + vec.len() * 4 + 1);
