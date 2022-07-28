@@ -1,8 +1,8 @@
 #![feature(iter_advance_by)]
 use std::borrow::Cow;
 const ESCAPE_STRING_LENGTH: usize = 3;
-const u2028: &'static str = r#"\\u2028"#;
-const u2029: &'static str = r#"\\u2029"#;
+const U2028: &'static str = r#"\\u2028"#;
+const U2029: &'static str = r#"\\u2029"#;
 use once_cell::sync::Lazy;
 use regex::Regex;
 
@@ -30,7 +30,7 @@ pub fn two_pass_search_one_pass_copy<'a>(input: &'a str) -> Cow<'a, str> {
         let mut last = 0;
         for (i, ch) in vec.into_iter() {
             ret.push_str(unsafe { input.get_unchecked(last..i) });
-            ret.push_str(if ch == "\u{2028}" { u2028 } else { u2029 });
+            ret.push_str(if ch == "\u{2028}" { U2028 } else { U2029 });
             last = i + ESCAPE_STRING_LENGTH;
         }
         ret.push_str(unsafe { input.get_unchecked(last..) });
@@ -53,7 +53,7 @@ pub fn memchr3_replace<'a>(input: &'a str) -> Cow<'a, str> {
         let mut last = 0;
         for (i, ch) in vec.into_iter() {
             ret.push_str(unsafe { input.get_unchecked(last..i) });
-            ret.push_str(if ch == "\u{2028}" { u2028 } else { u2029 });
+            ret.push_str(if ch == "\u{2028}" { U2028 } else { U2029 });
             last = i + ESCAPE_STRING_LENGTH;
         }
         ret.push_str(unsafe { input.get_unchecked(last..) });
@@ -65,7 +65,7 @@ pub fn memchr3_replace<'a>(input: &'a str) -> Cow<'a, str> {
 }
 pub fn regex_replace<'a>(input: &'a str) -> String {
     REGEX2029
-        .replace_all(&REGEX2028.replace_all(input, u2028), u2029)
+        .replace_all(&REGEX2028.replace_all(input, U2028), U2029)
         .to_string()
 }
 
@@ -76,18 +76,18 @@ pub fn regex_iter_replace<'a>(input: &'a str) -> Cow<'a, str> {
         // This duplicate due to we don't want to allocate a new string if there is no escape `\u2028` or `\u2029`
         ret.push_str(unsafe { input.get_unchecked(0..mat.start()) });
         ret.push_str(if mat.as_str() == "\u{2028}" {
-            u2028
+            U2028
         } else {
-            u2029
+            U2029
         });
         let mut last = mat.start() + ESCAPE_STRING_LENGTH;
         for mat in result_iterator {
             let start_index = mat.start();
             ret.push_str(unsafe { input.get_unchecked(last..start_index) });
             ret.push_str(if mat.as_str() == "\u{2028}" {
-                u2028
+                U2028
             } else {
-                u2029
+                U2029
             });
             last = start_index + ESCAPE_STRING_LENGTH;
         }
