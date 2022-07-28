@@ -1,4 +1,3 @@
-#![feature(iter_advance_by)]
 use std::borrow::Cow;
 const ESCAPE_STRING_LENGTH: usize = 3;
 const U2028: &'static str = r#"\\u2028"#;
