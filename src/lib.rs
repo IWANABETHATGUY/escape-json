@@ -26,13 +26,13 @@ pub fn two_pass_search_one_pass_copy<'a>(input: &'a str) -> Cow<'a, str> {
     let ret = if vec.len() > 0 {
         vec.sort_unstable_by(|a, b| a.0.cmp(&b.0));
         let mut ret = String::with_capacity(input.len() + vec.len() * 4);
-        let mut last = 0;
-        for (i, ch) in vec.into_iter() {
-            ret.push_str(unsafe { input.get_unchecked(last..i) });
-            ret.push_str(if ch == "\u{2028}" { U2028 } else { U2029 });
-            last = i + ESCAPE_STRING_LENGTH;
-        }
-        ret.push_str(unsafe { input.get_unchecked(last..) });
+        // let mut last = 0;
+        // for (i, ch) in vec.into_iter() {
+        //     ret.push_str(unsafe { input.get_unchecked(last..i) });
+        //     ret.push_str(if ch == "\u{2028}" { U2028 } else { U2029 });
+        //     last = i + ESCAPE_STRING_LENGTH;
+        // }
+        // ret.push_str(unsafe { input.get_unchecked(last..) });
         Cow::Owned(ret)
     } else {
         Cow::Borrowed(input)

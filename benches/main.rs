@@ -40,3 +40,4 @@ macro_rules! bench {
         });
     }};
 }
+
